@@ -1,0 +1,14 @@
+---
+import Collection from "@redeemid/emdash/components/Collection.astro";
+import Base from "../../layouts/Base.astro";
+
+// Every Shopify store starts with a "Home page" collection (handle "frontpage").
+// Point this at any collection that is published to the Headless channel.
+const COLLECTION = "frontpage";
+---
+
+<Base title="Shop">
+	<Collection handle={COLLECTION} productHref="/shop/{handle}/" showTitle browse quickAdd>
+		<p>The shop is empty for now. In Shopify, add products to the <strong>Home page</strong> collection and make that collection and its products available to the <strong>Headless</strong> sales channel.</p>
+	</Collection>
+</Base>

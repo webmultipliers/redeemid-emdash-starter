@@ -1,0 +1,114 @@
+---
+import Account from "@redeemid/emdash/components/Account.astro";
+import Cart from "@redeemid/emdash/components/Cart.astro";
+import CartDrawer from "@redeemid/emdash/components/CartDrawer.astro";
+import RedeemIDClient from "@redeemid/emdash/components/RedeemIDClient.astro";
+import Notices from "@redeemid/emdash/components/Notices.astro";
+import { getMenuWithCacheHint, getSiteSettingsWithCacheHint } from "emdash";
+import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
+import { createPublicPageContext } from "emdash/page";
+import LiveSearch from "emdash/ui/search";
+import { resolveStarterSiteIdentity } from "../utils/site-identity";
+import "../styles/site.css";
+
+interface Props {
+	title: string;
+	pageTitle?: string | null;
+	description?: string | null;
+	image?: string | null;
+	canonical?: string | null;
+	/** Pass content reference for plugin page contributions on content pages */
+	content?: { collection: string; id: string; slug?: string | null };
+}
+
+const { title, pageTitle, description, image, canonical, content } =
+	Astro.props;
+const [settingsResult, menuResult] = await Promise.all([
+	getSiteSettingsWithCacheHint(),
+	getMenuWithCacheHint("primary"),
+]);
+if (Astro.cache?.enabled) {
+	Astro.cache.set(settingsResult.cacheHint);
+	Astro.cache.set(menuResult.cacheHint);
+}
+
+const { siteTitle, siteTagline, siteLogo } = resolveStarterSiteIdentity(
+	settingsResult.data,
+);
+const titleIncludesSiteName =
+	title === siteTitle ||
+	title.endsWith(` | ${siteTitle}`) ||
+	title.endsWith(` — ${siteTitle}`);
+const fullTitle = titleIncludesSiteName ? title : `${title} — ${siteTitle}`;
+const pageDescription = description ?? siteTagline;
+const menu = menuResult.data;
+
+const pageCtx = createPublicPageContext({
+	Astro,
+	kind: content ? "content" : "custom",
+	pageType: "website",
+	title: fullTitle,
+	pageTitle: pageTitle ?? title,
+	description: pageDescription,
+	canonical,
+	image,
+	content,
+	siteName: siteTitle,
+});
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{fullTitle}</title>
+		<EmDashHead page={pageCtx} />
+	</head>
+	<body>
+		<EmDashBodyStart page={pageCtx} />
+
+		<header class="site-header">
+			<a class="site-brand" href="/">
+				{
+					siteLogo ? (
+						<img src={siteLogo.url} alt={siteLogo.alt || siteTitle} class="site-brand__logo" />
+					) : (
+						siteTitle
+					)
+				}
+			</a>
+			<nav class="site-nav" aria-label="Main">
+				{
+					menu?.items.map((item) => (
+						<a
+							href={item.url}
+							target={item.target}
+							rel={item.target === "_blank" ? "noopener noreferrer" : undefined}
+						>
+							{item.label}
+						</a>
+					))
+				}
+			</nav>
+			<div class="site-tools">
+				<LiveSearch placeholder="Search..." collections={["posts", "pages"]} />
+				<Account />
+				<Cart drawer />
+			</div>
+		</header>
+
+		<main class="site-main">
+			<Notices />
+			<slot />
+		</main>
+
+		<footer class="site-footer">
+			<p>Content on <a href="https://github.com/emdash-cms/emdash">EmDash</a>. Store, checkout and accounts on Shopify, joined by <a href="https://github.com/webmultipliers/redeemid-emdash">RedeemID</a>.</p>
+		</footer>
+
+		<CartDrawer />
+		<RedeemIDClient />
+		<EmDashBodyEnd page={pageCtx} />
+	</body>
+</html>
