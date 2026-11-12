@@ -1,0 +1,43 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "my-emdash-store",
+	"main": "./src/worker.ts",
+	"compatibility_date": "2026-02-24",
+	"compatibility_flags": ["nodejs_compat"],
+	// Keep variables set in the Cloudflare dashboard when a build deploys.
+	"keep_vars": true,
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "my-emdash-store",
+		},
+	],
+	"r2_buckets": [
+		{
+			"binding": "MEDIA",
+			"bucket_name": "my-emdash-store-media",
+		},
+	],
+	// Per-visitor limits on Sign in, Buy and cart changes (RedeemID).
+	"ratelimits": [
+		{
+			"name": "REDEEMID_RATE_LIMIT",
+			"namespace_id": "1001",
+			"simple": { "limit": 20, "period": 60 },
+		},
+	],
+	// Co-editing rooms, one Durable Object per entry being edited
+	"durable_objects": {
+		"bindings": [{ "name": "EMDASH_ROOMS", "class_name": "EmDashRoom" }],
+	},
+	"exports": {
+		"EmDashRoom": { "type": "durable-object", "storage": "sqlite" },
+	},
+	// Sandboxed plugins require Worker Loader, available on Workers paid plans. Uncomment to enable:
+	// "worker_loaders": [{ "binding": "LOADER" }],
+	// EmDash's scheduler: scheduled publishing and plugin tasks, such as RedeemID's
+	// daily webhook health check.
+	"triggers": {
+		"crons": ["* * * * *"],
+	},
+}

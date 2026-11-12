@@ -1,0 +1,62 @@
+{
+	"name": "redeemid-emdash-starter",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"description": "An EmDash site on Cloudflare with Shopify commerce: a shop, a cart, Shopify checkout, store sign-in and members-only content.",
+	"license": "MIT",
+	"emdash": {
+		"seed": "seed/seed.json"
+	},
+	"cloudflare": {
+		"label": "RedeemID: Shopify commerce for EmDash",
+		"products": [
+			"Workers",
+			"D1",
+			"R2"
+		],
+		"categories": [
+			"starter"
+		],
+		"bindings": {
+			"REDEEMID_SHOPIFY_STORE_DOMAIN": {
+				"description": "Your store's myshopify.com domain, such as my-store.myshopify.com."
+			},
+			"REDEEMID_SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID": {
+				"description": "Shopify admin \u2192 Sales channels \u2192 Headless \u2192 your storefront \u2192 Customer Account API \u2192 Client ID. Readers sign in with it."
+			},
+			"REDEEMID_SHOPIFY_STOREFRONT_PRIVATE_TOKEN": {
+				"description": "Shopify admin \u2192 Sales channels \u2192 Headless \u2192 your storefront \u2192 Storefront API \u2192 Private access token. The shop, cart and checkout use it."
+			},
+			"REDEEMID_SHOPIFY_ADMIN_APP_CLIENT_SECRET": {
+				"description": "The client secret of a Shopify app installed on the store (Dev Dashboard). It checks the signature on Shopify's webhooks."
+			}
+		}
+	},
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"deploy": "astro build && wrangler deploy",
+		"typecheck": "astro check"
+	},
+	"dependencies": {
+		"@astrojs/cloudflare": "^14.4.7",
+		"@astrojs/react": "^7.1.8",
+		"@emdash-cms/auth": "^1.5.0",
+		"@emdash-cms/cloudflare": "^1.5.0",
+		"@redeemid/emdash": "^0.0.27",
+		"astro": "^7.4.11",
+		"emdash": "^1.5.0",
+		"react": "19.2.4",
+		"react-dom": "19.2.4"
+	},
+	"devDependencies": {
+		"@astrojs/check": "^0.9.12",
+		"@cloudflare/workers-types": "^5.20261112.1",
+		"wrangler": "^4.161.0"
+	},
+	"engines": {
+		"node": ">=22"
+	}
+}

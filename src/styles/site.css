@@ -1,0 +1,572 @@
+/*
+ * The starter's look: one small stylesheet with no framework. Change the
+ * tokens to rebrand, or replace the file. RedeemID's components carry
+ * redeemid-* classes and no styling of their own (except the cart drawer).
+ */
+:root {
+	--ink: #16181d;
+	--muted: #5c6370;
+	--line: #e4e6eb;
+	--paper: #ffffff;
+	--wash: #f6f7f9;
+	--accent: #1f5eff;
+	--accent-ink: #ffffff;
+	--ok: #11734b;
+	--warn: #a15c00;
+	--radius: 10px;
+	--measure: 42rem;
+	--wide: 72rem;
+	--font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font: 1.0625rem/1.65 var(--font);
+	color: var(--ink);
+	background: var(--paper);
+}
+
+a {
+	color: var(--accent);
+	text-underline-offset: 0.15em;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+h1,
+h2,
+h3 {
+	line-height: 1.2;
+	letter-spacing: -0.01em;
+}
+
+h1 {
+	font-size: clamp(1.9rem, 4vw, 2.6rem);
+	margin: 0 0 0.75rem;
+}
+
+[hidden] {
+	display: none !important;
+}
+
+:focus-visible {
+	outline: 3px solid var(--accent);
+	outline-offset: 2px;
+}
+
+/* Buttons and fields, including RedeemID's forms. */
+button,
+.button,
+input[type="submit"] {
+	font: inherit;
+	font-weight: 600;
+	border: 1px solid var(--accent);
+	background: var(--accent);
+	color: var(--accent-ink);
+	border-radius: var(--radius);
+	padding: 0.55rem 1.1rem;
+	cursor: pointer;
+	text-decoration: none;
+	display: inline-block;
+}
+
+button:hover,
+.button:hover {
+	filter: brightness(1.08);
+}
+
+button[disabled] {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+input,
+select,
+textarea {
+	font: inherit;
+	color: inherit;
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	padding: 0.45rem 0.65rem;
+	background: var(--paper);
+}
+
+label {
+	display: inline-flex;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+/* Header */
+.site-header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.75rem 1.5rem;
+	padding: 0.9rem max(1.25rem, calc((100% - var(--wide)) / 2));
+	border-bottom: 1px solid var(--line);
+	position: sticky;
+	top: 0;
+	background: color-mix(in srgb, var(--paper) 92%, transparent);
+	backdrop-filter: blur(8px);
+	z-index: 10;
+}
+
+.site-brand {
+	font-weight: 800;
+	font-size: 1.15rem;
+	color: var(--ink);
+	text-decoration: none;
+}
+
+.site-brand__logo {
+	height: 36px;
+	width: auto;
+	display: block;
+}
+
+.site-nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem 1.1rem;
+}
+
+.site-nav a {
+	color: var(--ink);
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.site-nav a:hover {
+	color: var(--accent);
+}
+
+.site-tools {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	margin-left: auto;
+}
+
+.redeemid-account,
+.redeemid-cart {
+	white-space: nowrap;
+}
+
+.site-tools a {
+	color: var(--ink);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.site-tools a:hover {
+	color: var(--accent);
+}
+
+.redeemid-cart__count {
+	display: inline-grid;
+	place-items: center;
+	min-width: 1.4em;
+	height: 1.4em;
+	margin-left: 0.3em;
+	padding: 0 0.3em;
+	border-radius: 999px;
+	background: var(--accent);
+	color: var(--accent-ink);
+	font-size: 0.75em;
+	font-weight: 700;
+}
+
+/* Page */
+.site-main {
+	padding: 2.5rem max(1.25rem, calc((100% - var(--wide)) / 2)) 4rem;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 2rem;
+}
+
+.site-main:has(> aside) {
+	grid-template-columns: minmax(0, 1fr) 16rem;
+}
+
+.site-main > article {
+	max-width: var(--measure);
+}
+
+.site-main > aside {
+	font-size: 0.95rem;
+	color: var(--muted);
+}
+
+.site-main > aside li {
+	margin-bottom: 0.35rem;
+}
+
+.site-main > aside time {
+	display: block;
+	font-size: 0.8rem;
+}
+
+.site-main > aside ul,
+.site-main > ul {
+	list-style: none;
+	padding: 0;
+}
+
+.site-main > ul {
+	display: grid;
+	gap: 1.75rem;
+}
+
+.site-main > ul h2 {
+	margin: 0.25rem 0;
+}
+
+.site-main > ul a {
+	color: var(--ink);
+	text-decoration: none;
+}
+
+time {
+	color: var(--muted);
+	font-size: 0.9rem;
+}
+
+.site-footer {
+	border-top: 1px solid var(--line);
+	color: var(--muted);
+	font-size: 0.9rem;
+	padding: 2rem max(1.25rem, calc((100% - var(--wide)) / 2));
+}
+
+.site-footer a {
+	color: inherit;
+}
+
+@media (max-width: 52rem) {
+	.site-main:has(> aside) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.site-tools {
+		margin-left: 0;
+		width: 100%;
+		justify-content: space-between;
+	}
+}
+
+/* Notices (signed in, added to cart…) */
+.redeemid-notice {
+	background: var(--wash);
+	border: 1px solid var(--line);
+	border-left: 4px solid var(--accent);
+	border-radius: var(--radius);
+	padding: 0.75rem 1rem;
+}
+
+/* Access badge and the wall */
+.redeemid-badge {
+	display: inline-flex;
+	gap: 0.3rem;
+	align-items: center;
+	font-size: 0.8rem;
+	font-weight: 600;
+	padding: 0.1rem 0.55rem;
+	border-radius: 999px;
+	background: var(--wash);
+	border: 1px solid var(--line);
+	margin-right: 0.5rem;
+}
+
+.redeemid-locked {
+	margin: 2rem 0;
+	padding: 1.5rem;
+	border-radius: var(--radius);
+	background: var(--wash);
+	border: 1px solid var(--line);
+	position: relative;
+}
+
+.redeemid-locked p:first-child {
+	margin-top: 0;
+}
+
+/* Product */
+.redeemid-product {
+	display: grid;
+	gap: 0.5rem 2.5rem;
+	grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 52rem) {
+	.redeemid-product:has(.redeemid-product__image) {
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+	}
+
+	.redeemid-product:has(.redeemid-product__image) > :not(.redeemid-product__image, .redeemid-product__thumbs) {
+		grid-column: 2;
+	}
+
+	.redeemid-product__image {
+		grid-row: 1 / span 8;
+	}
+}
+
+.redeemid-product__image {
+	width: 100%;
+	border-radius: var(--radius);
+	background: var(--wash);
+	aspect-ratio: 1;
+	object-fit: cover;
+}
+
+.redeemid-product__thumbs {
+	display: flex;
+	gap: 0.5rem;
+	list-style: none;
+	padding: 0;
+}
+
+.redeemid-product__thumbs button {
+	padding: 0;
+	background: none;
+	border: 2px solid transparent;
+}
+
+.redeemid-product__thumbs button[aria-pressed="true"] {
+	border-color: var(--accent);
+}
+
+.redeemid-product__thumbs img {
+	width: 4rem;
+	height: 4rem;
+	object-fit: cover;
+	border-radius: 6px;
+	display: block;
+}
+
+.redeemid-product__title {
+	margin: 0;
+}
+
+.redeemid-product__price,
+.redeemid-plan__price {
+	font-size: 1.35rem;
+	font-weight: 700;
+	margin: 0;
+}
+
+.redeemid-product__compare-at,
+.redeemid-collection__compare-at {
+	color: var(--muted);
+	font-weight: 400;
+	margin-left: 0.4rem;
+}
+
+.redeemid-product form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	align-items: center;
+}
+
+.redeemid-product form > p,
+.redeemid-product form > fieldset {
+	flex-basis: 100%;
+	margin: 0;
+}
+
+.redeemid-product form > p:empty {
+	display: none;
+}
+
+.redeemid-product form label {
+	min-width: 5.5rem;
+}
+
+fieldset {
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	padding: 0.5rem 0.9rem 0.75rem;
+	margin: 0;
+}
+
+.redeemid-product__unavailable,
+.redeemid-product__availability {
+	color: var(--warn);
+}
+
+.redeemid-product__description {
+	color: var(--muted);
+}
+
+/* Collections, search and recommendations */
+.redeemid-collection__grid,
+.redeemid-recommendations ul,
+.redeemid-search ul {
+	display: grid;
+	gap: 1.5rem;
+	grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+	list-style: none;
+	padding: 0;
+}
+
+.redeemid-collection__item img,
+.redeemid-recommendations img,
+.redeemid-search img {
+	width: 100%;
+	aspect-ratio: 1;
+	object-fit: cover;
+	border-radius: var(--radius);
+	background: var(--wash);
+}
+
+.redeemid-collection__item h3,
+.redeemid-recommendations h3 {
+	font-size: 1rem;
+	margin: 0.5rem 0 0.15rem;
+}
+
+.redeemid-collection__item a,
+.redeemid-recommendations a {
+	color: var(--ink);
+	text-decoration: none;
+}
+
+.redeemid-collection__price {
+	margin: 0;
+	color: var(--muted);
+}
+
+.redeemid-browse,
+.redeemid-search__form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem 1.25rem;
+	align-items: end;
+	margin: 1rem 0 1.5rem;
+}
+
+.redeemid-browse__pages {
+	display: flex;
+	gap: 1rem;
+	margin-top: 1.5rem;
+}
+
+/* Plan cards (Join) */
+.redeemid-plan {
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	padding: 1.5rem;
+	display: grid;
+	gap: 0.75rem;
+	align-content: start;
+}
+
+.redeemid-plan__title {
+	margin: 0;
+}
+
+.redeemid-plan__description {
+	color: var(--muted);
+	margin: 0;
+}
+
+.redeemid-plan__held {
+	color: var(--ok);
+	font-weight: 600;
+}
+
+/* Cart page */
+.redeemid-cartview__lines {
+	list-style: none;
+	padding: 0;
+	display: grid;
+	gap: 1rem;
+}
+
+.redeemid-cartview__line {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem 1.25rem;
+	align-items: center;
+	padding-bottom: 1rem;
+	border-bottom: 1px solid var(--line);
+}
+
+.redeemid-cartview__line img {
+	width: 4.5rem;
+	height: 4.5rem;
+	object-fit: cover;
+	border-radius: 6px;
+}
+
+.redeemid-cartview__name {
+	flex: 1 1 12rem;
+	font-weight: 600;
+}
+
+.redeemid-cartview__remove {
+	background: none;
+	color: var(--accent);
+	border-color: transparent;
+	padding-inline: 0.25rem;
+}
+
+.redeemid-cartview__totals {
+	font-size: 1.15rem;
+	font-weight: 700;
+}
+
+.redeemid-cartview__discount {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+/* Member account */
+.redeemid-member,
+.redeemid-preferences,
+.redeemid-data,
+.redeemid-contribution {
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	padding: 1.5rem;
+	max-width: var(--measure);
+}
+
+.redeemid-member__title,
+.redeemid-preferences__title,
+.redeemid-data__title,
+.redeemid-contribution__title {
+	margin-top: 0;
+}
+
+.redeemid-member__actions,
+.redeemid-contribution__amounts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+}
+
+.redeemid-preferences__field {
+	display: grid;
+	gap: 0.25rem;
+	margin-bottom: 1rem;
+}
+
+.redeemid-preferences__help,
+.redeemid-member__note {
+	color: var(--muted);
+	font-size: 0.9rem;
+}

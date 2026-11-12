@@ -1,0 +1,34 @@
+---
+import { siteConfig } from "@redeemid/emdash/access";
+import Plan from "@redeemid/emdash/components/Plan.astro";
+import Base from "../layouts/Base.astro";
+
+// One plan card per Shopify product listed on a level (Plugins → RedeemID →
+// Access → Levels → Products). The cards know the reader: their plan,
+// included, upgrade, renew or join.
+const config = await siteConfig(Astro.locals);
+const handles = [...new Set((config?.levels ?? []).flatMap((l) => l.products ?? []))];
+---
+
+<Base title="Join">
+	<h1>Join</h1>
+	{
+		handles.length ? (
+			<div class="plans">
+				{handles.map((handle) => (
+					<Plan handle={handle} />
+				))}
+			</div>
+		) : (
+			<p>Memberships aren't on sale yet. Staff: list a membership product on a level under <strong>Plugins → RedeemID → Access</strong>, and its plan card appears here.</p>
+		)
+	}
+</Base>
+
+<style>
+	.plans {
+		display: grid;
+		gap: 1.5rem;
+		grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+	}
+</style>
