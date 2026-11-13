@@ -53,31 +53,67 @@ const emdash = (args) =>
 		stdio: ["ignore", "pipe", "pipe"],
 	});
 
-const status = emdash(["--status", "--json"]);
-if (status.error) throw status.error;
-if (status.status !== 0) {
-	const reason = status.stderr.trim().split("\n").pop() ?? "";
-	console.error(status.stderr.trim());
-	console.error(
-		"[migrate] Couldn't read the database's migration status. Check that the build's API token has D1 Edit permission (Worker → Settings → Build → API token).",
-	);
-	process.exit(1);
+// The deployed Worker's own first request or cron run may already be
+// applying the same migrations (EmDash's runtime "auto" mode), so watch the
+// lock: wait while that run makes progress, and take its lock over only when
+// it has stopped, which leaves the database half-migrated otherwise.
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const STALLED_MS = 90_000;
+const GIVE_UP_MS = 10 * 60_000;
+const started = Date.now();
+let lastProgress = { applied: -1, at: Date.now() };
+
+function readStatus() {
+	const status = emdash(["--status", "--json"]);
+	if (status.error) throw status.error;
+	if (status.status !== 0) {
+		console.error(status.stderr.trim());
+		console.error(
+			"[migrate] Couldn't read the database's migration status. Check that the build's API token has D1 Edit permission (My Profile → API Tokens).",
+		);
+		process.exit(1);
+	}
+	return JSON.parse(status.stdout);
 }
 
-const report = JSON.parse(status.stdout);
-if (report.lock) {
-	console.error(
-		`[migrate] The migration lock has been held since ${report.lock.heldSince} (lock ${report.lock.id}). If no migration is running, release it: https://docs.emdashcms.com/deployment/core-migrations/#release-a-stuck-migration-lock`,
-	);
-	process.exit(1);
-}
-if (report.pending.length === 0) {
-	log("The database is up to date.");
-	process.exit(0);
-}
+for (;;) {
+	const report = readStatus();
+	if (report.pending.length === 0) {
+		log("The database is up to date.");
+		process.exit(0);
+	}
+	if (Date.now() - started > GIVE_UP_MS) {
+		console.error(`[migrate] ${report.pending.length} migration(s) are still pending after 10 minutes.`);
+		process.exit(1);
+	}
 
-log(`Applying ${report.pending.length} migration(s) to ${report.target.label}.`);
-const apply = emdash(["--expected-target-fingerprint", report.target.fingerprint]);
-process.stdout.write(apply.stdout);
-process.stderr.write(apply.stderr);
-process.exit(apply.status ?? 1);
+	const fingerprint = ["--expected-target-fingerprint", report.target.fingerprint];
+	if (report.knownApplied.length !== lastProgress.applied) {
+		lastProgress = { applied: report.knownApplied.length, at: Date.now() };
+	}
+
+	let args;
+	if (!report.lock) {
+		log(`Applying ${report.pending.length} migration(s) to ${report.target.label}.`);
+		args = fingerprint;
+	} else if (Date.now() - lastProgress.at >= STALLED_MS && Date.now() - Date.parse(report.lock.heldSince) >= STALLED_MS) {
+		log(`Another run stopped while holding the migration lock (since ${report.lock.heldSince}); taking it over.`);
+		args = ["--take-over-lock", report.lock.id, ...fingerprint];
+	} else {
+		log(`Another run is applying migrations (${report.knownApplied.length} applied, ${report.pending.length} pending); waiting.`);
+		await sleep(10_000);
+		continue;
+	}
+
+	const apply = emdash(args);
+	process.stdout.write(apply.stdout);
+	if (apply.status === 0) continue;
+	// Lost a race with the Worker's own run: go back to watching it.
+	if (/migration lock|another instance/i.test(apply.stderr)) {
+		log(apply.stderr.trim().split("\n").pop());
+		await sleep(10_000);
+		continue;
+	}
+	process.stderr.write(apply.stderr);
+	process.exit(apply.status ?? 1);
+}
