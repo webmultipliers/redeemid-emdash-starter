@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "my-emdash-store",
+	"name": "redeemid-store",
 	"main": "./src/worker.ts",
 	"compatibility_date": "2026-02-24",
 	"compatibility_flags": ["nodejs_compat"],
@@ -9,13 +9,13 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "my-emdash-store",
+			"database_name": "redeemid-store",
 		},
 	],
 	"r2_buckets": [
 		{
 			"binding": "MEDIA",
-			"bucket_name": "my-emdash-store-media",
+			"bucket_name": "redeemid-store-media",
 		},
 	],
 	// Per-visitor limits on Sign in, Buy and cart changes (RedeemID).
