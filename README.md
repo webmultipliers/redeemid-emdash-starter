@@ -94,7 +94,9 @@ The app and the store must be in the same Shopify organization: the site signs i
 
 ## Deploy
 
-1. **Press Deploy to Cloudflare** (the button at the top). It copies this repository to your GitHub account, creates the D1 database and R2 bucket, and builds the site. The Workers free plan is enough.
+1. **Press Deploy to Cloudflare** (the button at the top). It copies this repository to your GitHub account and builds the site, and the first deploy creates the D1 database and R2 bucket. The Workers free plan is enough.
+   - **Names:** the database, the bucket and the session store are named after the Worker, with names like `my-shop-db`, `my-shop-media` and `my-shop-session` for a Worker called `my-shop`, so every copy of the starter gets its own.
+   - **Database migrations:** the deploy command (`pnpm run deploy`) builds the site, applies EmDash's database migrations with `emdash migrate`, then deploys, so the site never starts on an empty database. If a build stops at a `[migrate]` line saying it couldn't read the migration status, the build's API token is missing **D1 Edit**: add it under **My Profile → API Tokens** (the token named after your Worker's builds), then retry the build.
 2. **Add the runtime secrets.** The site can't reach Shopify without them. The deploy page may ask for the values listed in `.dev.vars.example`, but don't count on it: check that each row of the table in **5. What you should have now** is set, and add any that are missing, including the client secret if your client is confidential. In the Cloudflare dashboard, open **Workers & Pages →** your Worker **→ Settings → Variables and Secrets**, choose **Add**, pick type **Secret**, and paste the name and value.
 
    Or, from your copy of the repository:
