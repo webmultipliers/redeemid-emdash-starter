@@ -20,14 +20,32 @@ if (!process.env.CLOUDFLARE_API_TOKEN) {
 }
 
 const config = unstable_readConfig({ config: "wrangler.jsonc" }, { hideWarnings: true });
+const accountId = config.account_id || process.env.CLOUDFLARE_ACCOUNT_ID;
 const db = config.d1_databases.find((binding) => binding.binding === "DB");
-const selector = db?.database_id || db?.database_name;
+const selector = db?.database_id || db?.database_name || (await deployedDatabaseId());
 if (!selector) {
-	log("wrangler.jsonc has no DB database yet; it is migrated after the deploy creates it.");
+	if (after) {
+		console.error(`[migrate] Couldn't find the DB database bound to the ${config.name} Worker.`);
+		process.exit(1);
+	}
+	log("The DB database doesn't exist yet; it is migrated after the deploy creates it.");
 	process.exit(0);
 }
 
-const target = ["--d1", selector, ...(config.account_id ? ["--account-id", config.account_id] : [])];
+// wrangler.jsonc leaves the database unnamed, so Cloudflare names it after the
+// Worker on the first deploy. Read its ID from the deployed Worker's bindings.
+async function deployedDatabaseId() {
+	if (!accountId || !config.name) return undefined;
+	const response = await fetch(
+		`https://api.cloudflare.com/client/v4/accounts/${accountId}/workers/scripts/${encodeURIComponent(config.name)}/settings`,
+		{ headers: { Authorization: `Bearer ${process.env.CLOUDFLARE_API_TOKEN}` } },
+	).catch(() => undefined);
+	if (!response?.ok) return undefined;
+	const body = await response.json().catch(() => undefined);
+	return body?.result?.bindings?.find((binding) => binding.type === "d1" && binding.name === "DB")?.id;
+}
+
+const target = ["--d1", selector, ...(accountId ? ["--account-id", accountId] : [])];
 const emdash = (args) =>
 	spawnSync(join("node_modules", ".bin", "emdash"), ["migrate", ...args, ...target], {
 		encoding: "utf8",
@@ -39,10 +57,6 @@ const status = emdash(["--status", "--json"]);
 if (status.error) throw status.error;
 if (status.status !== 0) {
 	const reason = status.stderr.trim().split("\n").pop() ?? "";
-	if (!after && /No D1 database named/.test(reason)) {
-		log("The database doesn't exist yet; it is migrated after the deploy creates it.");
-		process.exit(0);
-	}
 	console.error(status.stderr.trim());
 	console.error(
 		"[migrate] Couldn't read the database's migration status. Check that the build's API token has D1 Edit permission (Worker → Settings → Build → API token).",
