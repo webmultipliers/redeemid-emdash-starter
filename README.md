@@ -118,6 +118,17 @@ The app and the store must be in the same Shopify organization: the site signs i
 
 To sell memberships, list a membership product on a level under **Plugins → RedeemID → Access**, and add a Flow workflow that tags the customer when the order is paid ([Flow recipes](https://github.com/webmultipliers/redeemid-emdash/blob/main/docs/shopify-flow.md)). The full reference for every step is [Connect a store](https://github.com/webmultipliers/redeemid-emdash/blob/main/docs/shopify-setup.md).
 
+## Send the store's own pages to the site
+
+Shopify still serves the store's online store pages, such as `shop.example.com/products/gold`. Shoppers reach them from old links and the store link at the top of checkout, and search engines find two pages for each product. The [RedeemID redirect theme](https://github.com/webmultipliers/redeemid-emdash-shopify-redirect-theme) sends each one to its page on this site, while checkout, order status, gift cards and customer accounts stay on Shopify.
+
+1. Download the theme from GitHub (**Code → Download ZIP**).
+2. In Shopify admin, open **Online Store → Themes**, then **Add theme → Upload zip file**.
+3. **Customize** the theme, open **Theme settings → Your site**, and enter your site's domain, such as `example.com`, in **Send visitors to**. The default **Paths on your site** already match this starter (`/products/gold` opens `/shop/gold/`, `/collections/…` opens `/shop/`, `/search` opens `/shop/search`).
+4. **Save**, then **Publish** the theme.
+
+Shopify's discount links then reach the site too, and the code goes on the shopper's cart. A customer who's signed in to the store is signed in here without a form.
+
 ## Run it locally
 
 ```sh
