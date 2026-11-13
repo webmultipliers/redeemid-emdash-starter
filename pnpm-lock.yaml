@@ -21,8 +21,8 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0(53bb7684413ec90f8bfed306f5c10893)
       '@redeemid/emdash':
-        specifier: ^0.0.28
-        version: 0.0.28(@emdash-cms/auth@1.5.0(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(kysely@0.29.9))(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(emdash@1.5.0(@astrojs/react@7.1.8(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1)))(@atcute/cbor@2.3.8(@atcute/cid@2.5.0))(@atcute/cid@2.5.0)(@atcute/identity@2.0.2(@atcute/lexicons@2.1.1)(typescript@6.0.3))(@date-fns/tz@1.5.0)(@floating-ui/dom@1.8.0)(@tiptap/extensions@3.32.0(@tiptap/core@3.32.0(@tiptap/pm@3.32.0))(@tiptap/pm@3.32.0))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(date-fns@4.4.0)(echarts@6.1.0)(prosemirror-model@1.25.13)(prosemirror-state@1.4.4)(prosemirror-view@1.42.9)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.3))
+        specifier: ^0.0.29
+        version: 0.0.29(@emdash-cms/auth@1.5.0(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(kysely@0.29.9))(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(emdash@1.5.0(@astrojs/react@7.1.8(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1)))(@atcute/cbor@2.3.8(@atcute/cid@2.5.0))(@atcute/cid@2.5.0)(@atcute/identity@2.0.2(@atcute/lexicons@2.1.1)(typescript@6.0.3))(@date-fns/tz@1.5.0)(@floating-ui/dom@1.8.0)(@tiptap/extensions@3.32.0(@tiptap/core@3.32.0(@tiptap/pm@3.32.0))(@tiptap/pm@3.32.0))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(date-fns@4.4.0)(echarts@6.1.0)(prosemirror-model@1.25.13)(prosemirror-state@1.4.4)(prosemirror-view@1.42.9)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.3))
       astro:
         specifier: ^7.4.11
         version: 7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1)
@@ -1185,8 +1185,8 @@ packages:
     resolution: {integrity: sha512-djfIGU9n6DRrunlvj2nIDAp17URo/nA4jSXGvf+Gupx8NLLy9fmJBZ3GL8yhqn9lSVc+cKCharjOa3aOBnWbRw==}
     engines: {node: '>=20.19 <22 || >=22.12'}
 
-  '@redeemid/emdash@0.0.28':
-    resolution: {integrity: sha512-70kZdfjXlzSKaWo9JqVQF582WRTYv+oMG9pfn8tJezFMN37fRqOGGG0X4PGW03iy+KGwdFGi6FLkiZyxgwbQaA==}
+  '@redeemid/emdash@0.0.29':
+    resolution: {integrity: sha512-RkJvwh4kPrpdv2fqMdt/CmbEwRqhfcCnHohGXC7avoVOzxy/0GCgqSzXlJBn3QRGslHXHnfxYyUFlEgsOewXwA==}
     hasBin: true
     peerDependencies:
       '@emdash-cms/auth': '>=1.1.0'
@@ -4881,7 +4881,7 @@ snapshots:
 
   '@portabletext/types@4.0.2': {}
 
-  '@redeemid/emdash@0.0.28(@emdash-cms/auth@1.5.0(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(kysely@0.29.9))(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(emdash@1.5.0(@astrojs/react@7.1.8(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1)))(@atcute/cbor@2.3.8(@atcute/cid@2.5.0))(@atcute/cid@2.5.0)(@atcute/identity@2.0.2(@atcute/lexicons@2.1.1)(typescript@6.0.3))(@date-fns/tz@1.5.0)(@floating-ui/dom@1.8.0)(@tiptap/extensions@3.32.0(@tiptap/core@3.32.0(@tiptap/pm@3.32.0))(@tiptap/pm@3.32.0))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(date-fns@4.4.0)(echarts@6.1.0)(prosemirror-model@1.25.13)(prosemirror-state@1.4.4)(prosemirror-view@1.42.9)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.3))':
+  '@redeemid/emdash@0.0.29(@emdash-cms/auth@1.5.0(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(kysely@0.29.9))(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(emdash@1.5.0(@astrojs/react@7.1.8(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1)))(@atcute/cbor@2.3.8(@atcute/cid@2.5.0))(@atcute/cid@2.5.0)(@atcute/identity@2.0.2(@atcute/lexicons@2.1.1)(typescript@6.0.3))(@date-fns/tz@1.5.0)(@floating-ui/dom@1.8.0)(@tiptap/extensions@3.32.0(@tiptap/core@3.32.0(@tiptap/pm@3.32.0))(@tiptap/pm@3.32.0))(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(date-fns@4.4.0)(echarts@6.1.0)(prosemirror-model@1.25.13)(prosemirror-state@1.4.4)(prosemirror-view@1.42.9)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.3))':
     dependencies:
       '@emdash-cms/auth': 1.5.0(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(kysely@0.29.9)
       astro: 7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1)
