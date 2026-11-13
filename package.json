@@ -28,6 +28,9 @@
 			"REDEEMID_SHOPIFY_STOREFRONT_PRIVATE_TOKEN": {
 				"description": "Shopify admin \u2192 Sales channels \u2192 Headless \u2192 your storefront \u2192 Storefront API \u2192 Private access token. The shop, cart and checkout use it."
 			},
+			"REDEEMID_SHOPIFY_ADMIN_APP_CLIENT_ID": {
+				"description": "The client ID of the same Shopify app (Dev Dashboard \u2192 your app \u2192 Settings). The site uses it to register webhooks and for the staff tools."
+			},
 			"REDEEMID_SHOPIFY_ADMIN_APP_CLIENT_SECRET": {
 				"description": "The client secret of a Shopify app installed on the store (Dev Dashboard). It checks the signature on Shopify's webhooks."
 			}
@@ -58,5 +61,6 @@
 	},
 	"engines": {
 		"node": ">=22"
-	}
+	},
+	"packageManager": "pnpm@10.28.0"
 }

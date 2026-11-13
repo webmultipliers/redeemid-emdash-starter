@@ -18,30 +18,109 @@ Shopify runs the store, checkout, orders, subscriptions and customer accounts. E
 - **Admin:** RedeemID's pages under **Plugins → RedeemID** cover Setup, Access, Members, Webhooks, Reports, Status and more. Editors get Paywall break, Members only, Product, Collection and Plan blocks.
 - **Look:** one small stylesheet, `src/styles/site.css`, with no framework. Change its tokens to rebrand, or replace it.
 
+## Before you deploy: set up Shopify
+
+The site needs a few values that only exist once Shopify is set up, so do this part first. It takes about twenty minutes. **Plugins → RedeemID → Setup** in the site's admin checks every step afterwards.
+
+### 1. The store
+
+- **Plan:** Shopify's **Basic** plan is enough to start. It includes the Headless channel, the new customer accounts and Shopify Flow.
+- **Customer accounts:** in **Settings → Customer accounts**, use the new customer accounts (not legacy). Legacy accounts have no Customer Account API, so nobody could sign in.
+- **Apps to install:**
+  - [Shopify Flow](https://apps.shopify.com/flow) tags customers when they buy a membership, renew or cancel. RedeemID only reads tags, so Flow (or another app) is what grants and removes access. See the [Flow recipes](https://github.com/webmultipliers/redeemid-emdash/blob/main/docs/shopify-flow.md).
+  - [Shopify Digital Products](https://apps.shopify.com/delivery) delivers downloads, such as e-books or audio files, after checkout.
+  - [Headless](https://apps.shopify.com/headless), the sales channel for sign-in and the shop (step 3).
+- **Your store's myshopify domain:** it's under **Settings → Domains**, such as `my-store.myshopify.com`. The site always needs this one, even after you add your own domains.
+
+### 2. Domains
+
+Your EmDash site lives on your own domain, such as `example.com`. Shopify serves checkout and customer accounts from its own pages, and you can put those on your domain too:
+
+| What | Example | Where to set it |
+| --- | --- | --- |
+| The site (EmDash) | `example.com` | Cloudflare: your Worker → **Settings → Domains & Routes → Add → Custom domain**, after you deploy |
+| The store (checkout, order status) | `shop.example.com` | Shopify: **Settings → Domains → Connect existing domain**, then make it the primary domain |
+| Customer accounts (sign-in, orders, addresses) | `account.example.com` | Shopify: **Settings → Customer accounts → Domain** ([how](https://help.shopify.com/en/manual/domains/add-a-domain/connecting-domains/connect-domain-customer-account)) |
+
+Both Shopify domains are optional, and you can add them later: sign-in and checkout follow them on their own, so nothing on the site changes. Keep the site's own domain off Shopify, since the Worker answers there. For each Shopify domain, add the DNS record Shopify shows (a `CNAME` to `shops.myshopify.com`) in Cloudflare's DNS with the proxy turned off (grey cloud).
+
+### 3. Sign-in and the shop: a Headless storefront
+
+1. In Shopify admin, open **Sales channels → Headless** and **Create storefront**. Name it after the site.
+2. Open **Storefront API** and copy the **Private access token**. The shop, cart and checkout use it. The default permissions cover products, collections and carts.
+3. Open **Customer Account API**, then **Application setup**, and fill in all three addresses with your site's domain:
+
+   | Field | Value |
+   | --- | --- |
+   | **Callback URI(s)** (required) | `https://example.com/_emdash/api/auth/redeemid/callback` |
+   | **JavaScript origin(s)** | `https://example.com` |
+   | **Logout URI** | `https://example.com/` |
+
+   Shopify only accepts `https` addresses. If the site isn't deployed yet, copy the values below now and come back to this step once you know its address: your domain, or the `*.workers.dev` address Cloudflare gives the Worker until you connect one.
+4. Pick the **Client type**. **Public** has no secret. **Confidential** gives a client secret, which you then set on the site as well (step 5).
+5. Copy the **Client ID**.
+
+To sell, make your products and the collection the shop lists available to the **Headless** channel (on each product, **Sales channels**). The shop lists the **Home page** collection; to list another, change `COLLECTION` in `src/pages/shop/index.astro`.
+
+### 4. Webhooks: a Shopify app
+
+Shopify tells the site when a customer's tags change through webhooks, and they come from an app you create for your store. The site registers the webhooks itself, as long as the app has the right scopes.
+
+1. Open Shopify's [Dev Dashboard](https://dev.shopify.com/dashboard) and **Create app**. Name it after the site.
+2. Create a **version**. For **App URL**, use your site's address (the app has no pages of its own). Under **Access → Scopes**, add these Admin API scopes:
+
+   | Scope | Why |
+   | --- | --- |
+   | `read_customers` | Registers the customer webhooks and reads a member's tags |
+   | `write_customers` | Staff tag edits and member preferences, written to Shopify |
+   | `read_customer_merge` | The `customers/merge` webhook |
+   | `write_customer_data_erasure` | Optional: the **Also request erasure in Shopify** button on a member's page |
+
+3. **Release** the version, then **Install** the app on your store.
+4. Open the app's **Settings** and copy the **Client ID** and **Client secret**.
+
+The app and the store must be in the same Shopify organization: the site signs in as the app with Shopify's client credentials grant. When you change scopes later, release a new version and have the store accept it.
+
+### 5. What you should have now
+
+| Value | Where it came from | Secret name on the site |
+| --- | --- | --- |
+| The myshopify domain | Step 1 | `REDEEMID_SHOPIFY_STORE_DOMAIN` |
+| Customer Account API client ID | Step 3 | `REDEEMID_SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID` |
+| Customer Account API client secret | Step 3, confidential clients only | `REDEEMID_SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_SECRET` |
+| Storefront API private access token | Step 3 | `REDEEMID_SHOPIFY_STOREFRONT_PRIVATE_TOKEN` |
+| The app's client ID | Step 4 | `REDEEMID_SHOPIFY_ADMIN_APP_CLIENT_ID` |
+| The app's client secret | Step 4 | `REDEEMID_SHOPIFY_ADMIN_APP_CLIENT_SECRET` |
+
 ## Deploy
 
-1. **Shopify first.** You need a store with the new customer accounts, the **Headless** sales channel and a Shopify app on the store to send webhooks. [Connect a store](https://github.com/webmultipliers/redeemid-emdash/blob/main/docs/shopify-setup.md) walks through it and gives you the four values below.
-2. **Press Deploy to Cloudflare.** It copies this repository to your GitHub account, creates the D1 database and R2 bucket, and asks for:
+1. **Press Deploy to Cloudflare** (the button at the top). It copies this repository to your GitHub account, creates the D1 database and R2 bucket, and builds the site. The Workers free plan is enough.
+2. **Add the runtime secrets.** The site can't reach Shopify without them. The deploy page may ask for the values listed in `.dev.vars.example`, but don't count on it: check that each row of the table in **5. What you should have now** is set, and add any that are missing, including the client secret if your client is confidential. In the Cloudflare dashboard, open **Workers & Pages →** your Worker **→ Settings → Variables and Secrets**, choose **Add**, pick type **Secret**, and paste the name and value.
 
-   | Secret | What it is |
-   | --- | --- |
-   | `REDEEMID_SHOPIFY_STORE_DOMAIN` | Your store's myshopify.com domain |
-   | `REDEEMID_SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID` | Headless → Customer Account API → Client ID |
-   | `REDEEMID_SHOPIFY_STOREFRONT_PRIVATE_TOKEN` | Headless → Storefront API → Private access token |
-   | `REDEEMID_SHOPIFY_ADMIN_APP_CLIENT_SECRET` | Your Shopify app's client secret, which checks webhooks |
+   Or, from your copy of the repository:
 
-   The Workers free plan is enough.
-3. **Set up EmDash.** Open `https://<your site>/_emdash/admin` and create the first admin account. Store customers can't create it. Tick the sample content to get the starter's posts.
-4. **Finish in RedeemID.** Open **Plugins → RedeemID → Setup** and work down the steps. It shows the callback address to register in Shopify, registers the webhooks and says what's still missing.
-5. **Try it.** Tag a test customer `member` in Shopify, sign in as them, and open **A post for members**.
+   ```sh
+   npx wrangler secret put REDEEMID_SHOPIFY_STORE_DOMAIN
+   npx wrangler secret put REDEEMID_SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID
+   npx wrangler secret put REDEEMID_SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_SECRET   # confidential clients only
+   npx wrangler secret put REDEEMID_SHOPIFY_STOREFRONT_PRIVATE_TOKEN
+   npx wrangler secret put REDEEMID_SHOPIFY_ADMIN_APP_CLIENT_ID
+   npx wrangler secret put REDEEMID_SHOPIFY_ADMIN_APP_CLIENT_SECRET
+   ```
 
-To sell in the shop, add products to the **Home page** collection (or change `COLLECTION` in `src/pages/shop/index.astro`) and make the collection and its products available to the Headless channel. To sell memberships, list a membership product on a level under **Plugins → RedeemID → Access**, and add a Shopify Flow workflow that tags the customer when the order is paid ([Flow recipes](https://github.com/webmultipliers/redeemid-emdash/blob/main/docs/shopify-flow.md)).
+   These go on the Worker itself. The **Build** settings also have variables, but the running site can't read those. Secrets apply straight away, and later deploys keep them.
+3. **Add your domain.** Connect `example.com` to the Worker (see **2. Domains** above), and fill in or update the three Customer Account API addresses from **3. Sign-in and the shop**.
+4. **Set up EmDash.** Open `https://example.com/_emdash/admin` and create the first admin account. Store customers can't create it. Tick the sample content to get the starter's posts.
+5. **Finish in RedeemID.** Open **Plugins → RedeemID → Setup** and work down the steps. It checks each value, registers the webhooks with one button and says what's still missing.
+6. **Try it.** Tag a test customer `member` in Shopify, sign in as them, and open **A post for members**.
+
+To sell memberships, list a membership product on a level under **Plugins → RedeemID → Access**, and add a Flow workflow that tags the customer when the order is paid ([Flow recipes](https://github.com/webmultipliers/redeemid-emdash/blob/main/docs/shopify-flow.md)). The full reference for every step is [Connect a store](https://github.com/webmultipliers/redeemid-emdash/blob/main/docs/shopify-setup.md).
 
 ## Run it locally
 
 ```sh
 pnpm install
-cp .dev.vars.example .dev.vars   # fill in the four values
+cp .dev.vars.example .dev.vars   # fill in the values from "What you should have now"
 pnpm dev
 ```
 
