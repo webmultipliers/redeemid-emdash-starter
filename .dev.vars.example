@@ -1,0 +1,12 @@
+# Your store's myshopify.com domain, e.g. my-store.myshopify.com
+REDEEMID_SHOPIFY_STORE_DOMAIN=
+# Headless channel → Customer Account API → Client ID (store sign-in)
+REDEEMID_SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_ID=
+# Headless channel → Storefront API → Private access token (shop, cart and checkout)
+REDEEMID_SHOPIFY_STOREFRONT_PRIVATE_TOKEN=
+# Your Shopify app's client ID (Dev Dashboard → app → Settings): registers webhooks, staff tools
+REDEEMID_SHOPIFY_ADMIN_APP_CLIENT_ID=
+# Your Shopify app's client secret (checks webhooks)
+REDEEMID_SHOPIFY_ADMIN_APP_CLIENT_SECRET=
+# Confidential Customer Account API clients only: add this line with the client secret
+# REDEEMID_SHOPIFY_CUSTOMER_ACCOUNT_CLIENT_SECRET=
