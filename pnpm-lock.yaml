@@ -21,8 +21,8 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0(53bb7684413ec90f8bfed306f5c10893)
       '@redeemid/emdash':
-        specifier: ^0.0.33
-        version: 0.0.33(bf96f1919610928c3982003eb27a05a4)
+        specifier: ^0.0.34
+        version: 0.0.34(bf96f1919610928c3982003eb27a05a4)
       astro:
         specifier: ^7.4.11
         version: 7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1)
@@ -1185,15 +1185,15 @@ packages:
     resolution: {integrity: sha512-djfIGU9n6DRrunlvj2nIDAp17URo/nA4jSXGvf+Gupx8NLLy9fmJBZ3GL8yhqn9lSVc+cKCharjOa3aOBnWbRw==}
     engines: {node: '>=20.19 <22 || >=22.12'}
 
-  '@redeemid/emdash@0.0.33':
-    resolution: {integrity: sha512-DHQHw1Zw1b3YpXsapq/lT+Ly0yStowx9v/SCMLVb1dGrZYpu1cOD/2FZnxAVAbn7wouMQv2LXZNs5J7Ucn7OJA==}
+  '@redeemid/emdash@0.0.34':
+    resolution: {integrity: sha512-64CDWEoJPTbbuQXB62EVYalHrSjY+ZmpEpNGPNG7noGuYCgDzG8GRsUa5ct+2todq2JJOb43kShb6KKOiwqSLA==}
     hasBin: true
     peerDependencies:
-      '@cloudflare/kumo': '>=2.6.0'
+      '@cloudflare/kumo': '>=2.15.0'
       '@emdash-cms/auth': '>=1.1.0'
-      '@emdash-cms/blocks': '>=1.4.0'
+      '@emdash-cms/blocks': '>=1.5.0'
       astro: '>=6'
-      emdash: '>=1.4.0'
+      emdash: '>=1.5.0'
       react: '>=19'
 
   '@rolldown/binding-android-arm-eabi@1.2.19':
@@ -4884,7 +4884,7 @@ snapshots:
 
   '@portabletext/types@4.0.2': {}
 
-  '@redeemid/emdash@0.0.33(bf96f1919610928c3982003eb27a05a4)':
+  '@redeemid/emdash@0.0.34(bf96f1919610928c3982003eb27a05a4)':
     dependencies:
       '@cloudflare/kumo': 2.15.0(@date-fns/tz@1.5.0)(@phosphor-icons/react@2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react@19.3.0)(date-fns@4.4.0)(echarts@6.1.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.6.7)
       '@emdash-cms/auth': 1.5.0(astro@7.4.11(@types/node@26.6.6)(esbuild@0.28.2)(yaml@2.9.1))(kysely@0.29.9)
