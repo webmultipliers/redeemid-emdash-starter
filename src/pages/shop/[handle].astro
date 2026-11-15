@@ -3,9 +3,14 @@ import { siteConfig } from "@redeemid/emdash/access";
 import Product from "@redeemid/emdash/components/Product.astro";
 import Recommendations from "@redeemid/emdash/components/Recommendations.astro";
 import { product, storeContext } from "@redeemid/emdash/storefront";
+import { getEmDashEntry } from "emdash";
+import { PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 
 const { handle = "" } = Astro.params;
+// The product's entry, when the site keeps it (Plugins → RedeemID → Products):
+// its story goes under the buy box. Without one, the page still sells it.
+const { entry } = await getEmDashEntry("products", handle).catch(() => ({ entry: null }));
 // The same cached read <Product> makes, so the page has the product's own
 // title and description, and an unknown handle answers 404.
 const config = await siteConfig(Astro.locals);
@@ -18,5 +23,6 @@ if (!p) Astro.response.status = 404;
 		<h1>Product not found</h1>
 		<p>This product isn't for sale here. <a href="/shop/">See everything in the shop</a>.</p>
 	</Product>
+	{p && entry?.data.content && <section class="product-story"><PortableText value={entry.data.content} /></section>}
 	{p && <Recommendations handle={handle} productHref="/shop/{handle}/" />}
 </Base>

@@ -14,7 +14,8 @@ Shopify runs the store, checkout, orders, subscriptions and customer accounts. E
 
 - **Shop:** `/shop/` lists a Shopify collection with Shopify's filters and sorting, `/shop/[handle]/` is a product page with options, subscriptions, recommendations and structured data, `/shop/search` searches the catalog, and `/cart` and a cart drawer lead to Shopify checkout.
 - **Members:** readers sign in with the store's customer account. Posts in the **Members** category open only for customers tagged `member` in Shopify. Everyone else reads the opening, up to the Paywall break, and then a panel that asks them to sign in or join. `/join/` shows a plan card for each membership product, and `/account` shows the member's card, preferences and data.
-- **Search engines:** product pages get the product's own title and description, unknown products answer 404, and `/sitemap-products.xml` lists every product page.
+- **Search engines:** product pages get the product's own title and description, unknown products answer 404, and `/sitemap-products.xml` lists every product page that EmDash's own sitemap doesn't.
+- **Product entries:** a `products` collection keeps the Shopify products you pick (or all of them) as EmDash entries, for EmDash search, menus, links from posts and a story under each product page. Add them under **Plugins → RedeemID → Products**. Shopify's fields follow Shopify. See [product entries](https://github.com/webmultipliers/redeemid-emdash/blob/main/docs/products.md).
 - **Admin:** RedeemID's pages under **Plugins → RedeemID** are Overview, Members, Access, Reports, Events, Privacy and Connection, plus a dashboard card and an Access panel on every entry. Editors get Paywall break, Members only, Sold on its own, Plan, Product, Collection, Product search, Contribution and Preferences blocks.
 - **Look:** one small stylesheet, `src/styles/site.css`, with no framework. Change its tokens to rebrand, or replace it.
 
