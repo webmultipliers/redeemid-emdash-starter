@@ -15,12 +15,12 @@ Shopify runs the store, checkout, orders, subscriptions and customer accounts. E
 - **Shop:** `/shop/` lists a Shopify collection with Shopify's filters and sorting, `/shop/[handle]/` is a product page with options, subscriptions, recommendations and structured data, `/shop/search` searches the catalog, and `/cart` and a cart drawer lead to Shopify checkout.
 - **Members:** readers sign in with the store's customer account. Posts in the **Members** category open only for customers tagged `member` in Shopify. Everyone else reads the opening, up to the Paywall break, and then a panel that asks them to sign in or join. `/join/` shows a plan card for each membership product, and `/account` shows the member's card, preferences and data.
 - **Search engines:** product pages get the product's own title and description, unknown products answer 404, and `/sitemap-products.xml` lists every product page.
-- **Admin:** RedeemID's pages under **Plugins → RedeemID** cover Setup, Access, Members, Webhooks, Reports, Status and more. Editors get Paywall break, Members only, Product, Collection and Plan blocks.
+- **Admin:** RedeemID's pages under **Plugins → RedeemID** are Overview, Members, Access, Reports, Events, Privacy and Connection, plus a dashboard card and an Access panel on every entry. Editors get Paywall break, Members only, Sold on its own, Plan, Product, Collection, Product search, Contribution and Preferences blocks.
 - **Look:** one small stylesheet, `src/styles/site.css`, with no framework. Change its tokens to rebrand, or replace it.
 
 ## Before you deploy: set up Shopify
 
-The site needs a few values that only exist once Shopify is set up, so do this part first. It takes about twenty minutes. **Plugins → RedeemID → Setup** in the site's admin checks every step afterwards.
+The site needs a few values that only exist once Shopify is set up, so do this part first. It takes about twenty minutes. **Plugins → RedeemID → Connection** in the site's admin checks every step afterwards, one tab per step.
 
 ### 1. The store
 
@@ -56,15 +56,15 @@ Both Shopify domains are optional, and you can add them later: sign-in and check
    | **JavaScript origin(s)** | `https://example.com` |
    | **Logout URI** | `https://example.com/` |
 
-   Shopify only accepts `https` addresses. If the site isn't deployed yet, copy the values below now and come back to this step once you know its address: your domain, or the `*.workers.dev` address Cloudflare gives the Worker until you connect one.
+   Shopify only accepts `https` addresses. If the site isn't deployed yet, come back to this step once you know its address: your domain, or the `*.workers.dev` address Cloudflare gives the Worker until you connect one.
 4. Pick the **Client type**. **Public** has no secret. **Confidential** gives a client secret, which you then set on the site as well (step 5).
 5. Copy the **Client ID**.
 
 To sell, make your products and the collection the shop lists available to the **Headless** channel (on each product, **Sales channels**). The shop lists the **Home page** collection; to list another, change `COLLECTION` in `src/pages/shop/index.astro`.
 
-### 4. Webhooks: a Shopify app
+### 4. The Admin API app
 
-Shopify tells the site when a customer's tags change through webhooks, and they come from an app you create for your store. The site registers the webhooks itself, as long as the app has the right scopes.
+The site talks to the Shopify Admin API through an app you create for your store. It runs the staff tools (resyncs, tag edits, member lookups) and member preferences, and it registers the webhooks that tell the site when a customer's tags change. Shopify signs those webhooks with the app's client secret.
 
 1. Open Shopify's [Dev Dashboard](https://dev.shopify.com/dashboard) and **Create app**. Name it after the site.
 2. Create a **version**. For **App URL**, use your site's address (the app has no pages of its own). Under **Access → Scopes**, add these Admin API scopes:
@@ -113,7 +113,7 @@ The app and the store must be in the same Shopify organization: the site signs i
    These go on the Worker itself. The **Build** settings also have variables, but the running site can't read those. Secrets apply straight away, and later deploys keep them.
 3. **Add your domain.** Connect `example.com` to the Worker (see **2. Domains** above), and fill in or update the three Customer Account API addresses from **3. Sign-in and the shop**.
 4. **Set up EmDash.** Open `https://example.com/_emdash/admin` and create the first admin account. Store customers can't create it. Tick the sample content to get the starter's posts.
-5. **Finish in RedeemID.** Open **Plugins → RedeemID → Setup** and work down the steps. It checks each value, registers the webhooks with one button and says what's still missing.
+5. **Finish in RedeemID.** Open **Plugins → RedeemID → Connection**. It opens on the first step that isn't done, with a tab per step (Store, Sign-in, Admin app, Webhooks, First level, Try it, Storefront) that gets a check mark once done. It checks each value, registers the webhooks with one button on the Webhooks tab, and the Status tab lists every setting as Set or Missing.
 6. **Try it.** Tag a test customer `member` in Shopify, sign in as them, and open **A post for members**.
 
 To sell memberships, list a membership product on a level under **Plugins → RedeemID → Access**, and add a Flow workflow that tags the customer when the order is paid ([Flow recipes](https://github.com/webmultipliers/redeemid-emdash/blob/main/docs/shopify-flow.md)). The full reference for every step is [Connect a store](https://github.com/webmultipliers/redeemid-emdash/blob/main/docs/shopify-setup.md).
@@ -142,7 +142,7 @@ Open `http://localhost:4321/_emdash/admin` to set up the site. Shopify only acce
 ## Make it yours
 
 - **Access:** levels, rules, the meter, drip, features and protected files are under **Plugins → RedeemID → Access**, and each entry has an Access panel. The defaults in `astro.config.mjs` (one Member level and the Members category rule) are a starting point, and a value saved in the admin beats them.
-- **Pages:** everything is in `src/pages/`. Keep `<Content>` wherever an entry's body renders, because plain `<PortableText>` shows everything. The Status page names any template that slips.
+- **Pages:** everything is in `src/pages/`. Keep `<Content>` wherever an entry's body renders, because plain `<PortableText>` shows everything. **Connection → Status** names any template that slips.
 - **Docs:** [RedeemID for EmDash](https://github.com/webmultipliers/redeemid-emdash#documentation) covers every component, block, option and route.
 
 ## License
