@@ -1,7 +1,7 @@
 ---
 import { getEmDashEntry, getSeoMeta, decodeSlug, getSiteSettings } from "emdash";
 import Content from "@redeemid/emdash/components/Content.astro";
-import { cacheEntry } from "@redeemid/emdash/cache";
+import { cacheEntry, cachePage } from "@redeemid/emdash/cache";
 import Base from "../layouts/Base.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 
@@ -14,6 +14,8 @@ if (!slug) {
 const { entry: page, cacheHint } = await getEmDashEntry("pages", slug);
 
 if (!page) {
+	// Publishing the missing entry purges the cached 404 (EmDash 1.6 tags misses with the collection).
+	cachePage(Astro, cacheHint);
 	return Astro.rewrite("/404");
 }
 
